@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { useMoralis, useMoralisQuery } from "react-moralis";
 import { useMoralisDapp } from "providers/MoralisDappProvider/MoralisDappProvider";
-import { Table, Tag, Space } from "antd";
+import { Table, Tag, Space, Typography } from "antd";
 import { PolygonCurrency} from "./Chains/Logos";
 import moment from "moment";
+import { useNFTBalance } from "hooks/useNFTBalance";
+const { Title } = Typography;
 
 const styles = {
   table: {
@@ -13,6 +15,7 @@ const styles = {
 };
 
 function NFTMarketTransactions() {
+  const { NFTBalance, fetchSuccess } = useNFTBalance();
   const { walletAddress } = useMoralisDapp();
   const { Moralis } = useMoralis();
   const queryItemImages = useMoralisQuery("ItemImages");
@@ -24,7 +27,7 @@ function NFTMarketTransactions() {
       "image",
     ])
   );
-  const queryMarketItems = useMoralisQuery("MarketItems");
+  const queryMarketItems = useMoralisQuery("CreatedMarketItems");
   const fetchMarketItems = JSON.parse(
     JSON.stringify(queryMarketItems.data, [
       "updatedAt",
@@ -43,6 +46,68 @@ function NFTMarketTransactions() {
     .sort((a, b) =>
       a.updatedAt < b.updatedAt ? 1 : b.updatedAt < a.updatedAt ? -1 : 0
     );
+
+  const queryMintItems = useMoralisQuery("mintItems");
+  const fetchMintItems = JSON.parse(
+    JSON.stringify(queryMintItems.data, [
+      "updatedAt",
+      "price",
+      "nftContract",
+      "tokenId",
+      "owner",
+    ])
+  ).filter(
+    (item) => item.owner === walletAddress
+  )
+  .sort((a, b) =>
+    a.updatedAt < b.updatedAt ? 1 : b.updatedAt < a.updatedAt ? -1 : 0
+  );
+
+  const columnsMint = [
+    {
+      title: "Date",
+      dataIndex: "date",
+      key: "date",
+    },
+    {
+      title: "token ID",
+      key: "tokenId",
+      render: (text, record) => (
+        <Space size="middle">
+          <span># {record.tokenId}</span>
+        </Space>
+      ),
+    },
+    {
+      title: "Collection",
+      key: "collection",
+      render: (text, record) => (
+        <Space size="middle">
+          <span>{record.collection}</span>
+        </Space>
+      ),
+    },
+    {
+      title: "Price",
+      key: "price",
+      dataIndex: "price",
+      render: (e) => (
+        <Space size="middle">
+          <PolygonCurrency/>
+          <span>{e}</span>
+        </Space>
+      ),
+    }
+  ];
+
+  const dataMint = fetchMintItems?.map((item, index) => ({
+    key: index,
+    date: moment(item.updatedAt).format("DD-MM-YYYY HH:mm"),
+    collection: item.nftContract,
+    tokenId: item.tokenId,
+    price: item.price / ("1e" + 18)
+  }));
+
 
   function getImage(addrs, id) {
     const img = fetchItemImages.find(
@@ -143,7 +208,10 @@ function NFTMarketTransactions() {
     <>
       <div>
         <div style={styles.table}>
+          <Title>Market</Title>
           <Table columns={columns} dataSource={data} />
+          <Title>Mint</Title>
+          <Table columns={columnsMint} dataSource={dataMint} />
         </div>
       </div>
     </>

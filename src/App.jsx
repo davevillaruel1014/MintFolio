@@ -8,6 +8,10 @@ import {
   Redirect,
 } from "react-router-dom";
 import Account from "components/Account";
+import MintNFT from "components/MintNFT";
+import MintCryptoDevs from "components/MintCryptoDevs";
+import BurnCryptoDevs from "components/BurnCryptoDevs";
+import RarityCryptoDevs from "components/RarityCryptoDevs";
 import Chains from "components/Chains";
 import NFTBalance from "components/NFTBalance";
 import NFTTokenIds from "components/NFTTokenIds";
@@ -74,9 +78,9 @@ const App = ({ isServerInfo }) => {
             mode="horizontal"
             style={{
               display: "flex",
-              fontSize: "17px",
+              fontSize: "14px",
               fontWeight: "500",
-              marginLeft: "50px",
+              marginLeft: "5px",
               width: "100%",
             }}
             defaultSelectedKeys={["nftMarket"]}
@@ -87,8 +91,20 @@ const App = ({ isServerInfo }) => {
             <Menu.Item key="nft">
               <NavLink to="/nftBalance">🖼 Your Collection</NavLink>
             </Menu.Item>
+            <Menu.Item key="mint">
+              <NavLink to="/mintNft">🔨 Mint NFT</NavLink>
+            </Menu.Item>
             <Menu.Item key="transactions">
               <NavLink to="/Transactions">📑 Your Transactions</NavLink>
+            </Menu.Item>
+            <Menu.Item key="mintCryptoDevs">
+              <NavLink to="/mintCryptoDevs">Mint CryptoDevs</NavLink>
+            </Menu.Item>
+            <Menu.Item key="burnCryptoDevs">
+              <NavLink to="/burnCryptoDevs">Burn CryptoDevs</NavLink>
+            </Menu.Item>
+            <Menu.Item key="rarityCryptoDevs">
+              <NavLink to="/rarityCryptoDevs">Rarity</NavLink>
             </Menu.Item>
           </Menu>
           <div style={styles.headerRight}>
@@ -99,6 +115,9 @@ const App = ({ isServerInfo }) => {
         </Header>
         <div style={styles.content}>
           <Switch>
+            <Route path="/mintNft">
+              <MintNFT />
+            </Route>
             <Route path="/nftBalance">
               <NFTBalance />
             </Route>
@@ -108,11 +127,20 @@ const App = ({ isServerInfo }) => {
             <Route path="/Transactions">
               <NFTMarketTransactions />
             </Route>
+            <Route path="/mintCryptoDevs">
+              <MintCryptoDevs />
+            </Route>
+            <Route path="/burnCryptoDevs">
+              <BurnCryptoDevs />
+            </Route>
+            <Route path="/rarityCryptoDevs">
+              <RarityCryptoDevs />
+            </Route>
           </Switch>
           <Redirect to="/NFTMarketPlace" />
         </div>
       </Router>
-      <Footer style={{ textAlign: "center" }}>
+      {/* <Footer style={{ textAlign: "center" }}>
         <Text style={{ display: "block" }}>
           ⭐️ Please star this{" "}
           <a
@@ -146,7 +174,7 @@ const App = ({ isServerInfo }) => {
             Moralis
           </a>
         </Text>
-      </Footer>
+      </Footer> */}
     </Layout>
   );
 };
