@@ -266,6 +266,7 @@ function MintCryptoDevs() {
             ))}
 
     </div>
+
     </div>
   );
 }
