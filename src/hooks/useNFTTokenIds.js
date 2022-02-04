@@ -11,6 +11,12 @@ export const useNFTTokenIds = (addr) => {
   const [NFTTokenIds, setNFTTokenIds] = useState([]);
   const [totalNFTs, setTotalNFTs] = useState();
   const [fetchSuccess, setFetchSuccess] = useState(true);
+
+  // made this change here to make less error calls
+  // if(addr == "explore"){
+  //   addr = "";
+  // }
+
   const {
     fetch: getNFTTokenIds,
     data,
@@ -21,6 +27,12 @@ export const useNFTTokenIds = (addr) => {
     address: addr,
     limit: 10,
   });
+
+  // if(addr == "explore"){
+  //   data = "{}";
+  // }
+
+  // console.log(data);
 
   useEffect(async () => {
     if (data?.result) {

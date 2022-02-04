@@ -13,6 +13,18 @@ export const networkCollections = {
       name: "Pixel Show",
       addrs: "0xCA34404dD8Bd6537BE76F3A51B379F8949bD7973",
     },
+    {
+      image:
+        "https://lh3.googleusercontent.com/LIpf9z6Ux8uxn69auBME9FCTXpXqSYFo8ZLO1GaM8T7S3hiKScHaClXe0ZdhTv5br6FE2g5i-J5SobhKFsYfe6CIMCv-UfnrlYFWOM4=s0",
+      name: "Random SVG",
+      addrs: "0x1f70BBd4eb2A225CFAaC498fb82D1994365197BF",
+    },
+    {
+      image:
+        "https://ipfs.moralis.io:2053/ipfs/QmTNVQaQjCz5JxgYUDrBtcdDAnXhHvvyfhbqHgu63dgWR1/images/0000000000000000000000000000000000000000000000000000000000000002.png",
+      name: "CryptoDevs",
+      addrs: "0x020783C43e25c5171A6842469400246f6373FfDD",
+    }
   ],
 
   "0x1": [
