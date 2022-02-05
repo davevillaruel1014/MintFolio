@@ -7,12 +7,13 @@ import {
   NavLink,
   Redirect,
 } from "react-router-dom";
-import Account from "components/Account";
+import Account from "components/Account/Account";
 import MintNFT from "components/MintNFT";
 import MintCryptoDevs from "components/MintCryptoDevs";
 import BurnCryptoDevs from "components/BurnCryptoDevs";
 import RarityCryptoDevs from "components/RarityCryptoDevs";
 import Chains from "components/Chains";
+import QuickStart from "components/QuickStart";
 import NFTBalance from "components/NFTBalance";
 import NFTTokenIds from "components/NFTTokenIds";
 import { Menu, Layout } from "antd";
@@ -23,6 +24,7 @@ import "./style.css";
 import Text from "antd/lib/typography/Text";
 import NFTMarketTransactions from "components/NFTMarketTransactions";
 const { Header, Footer } = Layout;
+const { SubMenu } = Menu
 
 const styles = {
   content: {
@@ -83,8 +85,11 @@ const App = ({ isServerInfo }) => {
               marginLeft: "5px",
               width: "100%",
             }}
-            defaultSelectedKeys={["nftMarket"]}
+            defaultSelectedKeys={["about"]}
           >
+            <Menu.Item key="about">
+              <NavLink to="/about">About</NavLink>
+            </Menu.Item>
             <Menu.Item key="nftMarket" onClick={() => setInputValue("explore")} >
               <NavLink to="/NFTMarketPlace">🛒 Explore Market</NavLink>
             </Menu.Item>
@@ -97,6 +102,7 @@ const App = ({ isServerInfo }) => {
             <Menu.Item key="transactions">
               <NavLink to="/Transactions">📑 Your Transactions</NavLink>
             </Menu.Item>
+            <SubMenu key="SubMenu" title="CryptoDevs">
             <Menu.Item key="mintCryptoDevs">
               <NavLink to="/mintCryptoDevs">Mint CryptoDevs</NavLink>
             </Menu.Item>
@@ -106,6 +112,7 @@ const App = ({ isServerInfo }) => {
             <Menu.Item key="rarityCryptoDevs">
               <NavLink to="/rarityCryptoDevs">Rarity</NavLink>
             </Menu.Item>
+            </SubMenu>
           </Menu>
           <div style={styles.headerRight}>
             <Chains />
@@ -115,6 +122,9 @@ const App = ({ isServerInfo }) => {
         </Header>
         <div style={styles.content}>
           <Switch>
+            <Route path="/about">
+              <QuickStart />
+            </Route>
             <Route path="/mintNft">
               <MintNFT />
             </Route>
@@ -137,7 +147,7 @@ const App = ({ isServerInfo }) => {
               <RarityCryptoDevs />
             </Route>
           </Switch>
-          <Redirect to="/NFTMarketPlace" />
+          <Redirect to="/about" />
         </div>
       </Router>
       {/* <Footer style={{ textAlign: "center" }}>
