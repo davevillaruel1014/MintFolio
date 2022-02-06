@@ -90,7 +90,8 @@ function Account() {
                 key={key}
                 onClick={async () => {
                   try {
-                    await authenticate({ provider: connectorId });
+                    await authenticate({ provider: connectorId, signingMessage: 
+                      "Welcome to MintFolio! Your one-stop dapp for all your NFT needs! Connect your wallet to use your website."});
                     window.localStorage.setItem("connectorId", connectorId);
                     setIsAuthModalVisible(false);
                   } catch (e) {
@@ -112,7 +113,7 @@ function Account() {
     <>
       <div style={styles.account} onClick={() => setIsModalVisible(true)}>
         <p style={{ marginRight: "5px", ...styles.text }}>
-          {getEllipsisTxt(walletAddress, 6)}
+          {getEllipsisTxt(walletAddress, 4)}
         </p>
         <Blockie currentWallet scale={3} />
       </div>

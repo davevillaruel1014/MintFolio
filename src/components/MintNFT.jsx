@@ -1,11 +1,18 @@
 import NativeBalance from "./NativeBalance";
 import Address from "./Address/Address";
 import Blockie from "./Blockie";
-import { Card, Button, Modal } from "antd";
+import { Card, Button, Modal, Typography } from "antd";
 import { useState } from "react";
 import { useMoralisDapp } from "providers/MoralisDappProvider/MoralisDappProvider";
 import { useWeb3ExecuteFunction } from "react-moralis";
 import { Steps } from 'antd';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
+const { Text } = Typography;
 
 const styles = {
   title: {
@@ -116,7 +123,13 @@ function MintNFT() {
     <Steps direction="vertical" size="small">
       <Step status={status} title="Mint Token" description="mint NFT Token" />
       <Step status={status} title="Generate Art" description="Randomly generate art work for your NFT" />
-      <Step status={status} title="Finish" description="see your NFT in your collection" />
+      <Step status={status} title="Finish" description={
+      <Text>
+              see your NFT in{" "}
+              <Link to="/nftBalance">your collection</Link>
+              {" "}
+      </Text>
+    }/> 
     </Steps>
     </Card>
   </div>

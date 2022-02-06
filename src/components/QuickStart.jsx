@@ -1,4 +1,4 @@
-import { Card, Timeline, Typography } from "antd";
+import { Card, Timeline, Typography, Image, Row, Col } from "antd";
 import React, { useMemo } from "react";
 import { useMoralis } from "react-moralis";
 
@@ -16,10 +16,34 @@ const styles = {
     boxShadow: "0 0.5rem 1.2rem rgb(189 197 209 / 20%)",
     border: "1px solid #e7eaf3",
     borderRadius: "0.5rem",
+    width: "500px",
+    margin: "10px"
+  },
+  banner: {
+    boxShadow: "0 0.5rem 1.2rem rgb(189 197 209 / 20%)",
+    border: "1px solid #e7eaf3",
+    borderRadius: "0.5rem",
+    width: "1020px",
+    margin: "10px"
   },
   timeline: {
     marginBottom: "-45px",
   },
+  cryptoDevImage: {
+    height: "250px",
+    width: "250px",
+    borderRadius: "50%",
+    border: "solid 4px white",
+    margin: "20px",
+    marginTop: "0px"
+  },
+  logo: {
+    width: "80%",
+    border: "solid 4px white",
+    margin: "20px",
+    marginTop: "0px",
+    flex: "1"
+  }
 };
 
 export default function QuickStart({ isServerInfo }) {
@@ -31,176 +55,123 @@ export default function QuickStart({ isServerInfo }) {
   );
 
   return (
-    <div style={{ display: "flex", gap: "10px" }}>
-      <Card style={styles.card} title={<h1 style={styles.title}>📝 To-Do List</h1>}>
-        <Timeline mode="left" style={styles.timeline}>
-          <Timeline.Item dot="📄">
-            <Text delete style={styles.text}>
-              Clone or fork{" "}
-              <a
-                href="https://github.com/ethereum-boilerplate/ethereum-boilerplate#-quick-start"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                ethereum-boilerplate
-              </a>{" "}
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <Card
+        style={styles.banner}
+        title={<h1 style={styles.title}>About MintFolio</h1>}
+      >
+        {/* <div style={{display: "flex", flexDirection: "row", alignItems: "center", }}> */}
+        <Row justify="space-between" style={{alignItems: "center"}}>
+          <Col span={8}>
+            <Image
+              preview={false}
+              src={"https://ethglobal.s3.amazonaws.com/recFEgY5UWANb5eiq/logo.png"}
+              alt="MintFolio"
+              style={styles.logo}
+            />
+          </Col>
+          <Col span={16}>
+            <Text style={styles.text}>
+              <Text strong>MintFolio</Text> is a one-stop Dapp for all your NFT needs, Whether you 
+               are a dev, artist or a new collector. Our Dapp allows you 
+               to mint, burn, check rarity, sell, list, generate ... NFTs. 
+               Fork and launch your new NFT collection/project in minutes!
             </Text>
-          </Timeline.Item>
-
-          <Timeline.Item dot="💿">
-            <Text delete style={styles.text}>
-              Install all dependencies: <Text code>npm install</Text>
-            </Text>
-          </Timeline.Item>
-
-          <Timeline.Item dot="🧰">
-            <Text delete={isServerInfo} style={styles.text}>
-              Sign up for a free account on{" "}
-              <a
-                href="https://moralis.io?utm_source=boilerplatehosted&utm_medium=todo&utm_campaign=ethereum-boilerplate"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Moralis
-              </a>
-            </Text>
-          </Timeline.Item>
-
-          <Timeline.Item dot="💾">
-            <Text delete={isServerInfo} style={styles.text}>
-              Create a Moralis Server (
-              <a
-                href="https://docs.moralis.io/moralis-server/getting-started/create-a-moralis-server"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                How to start Moralis Server
-              </a>
-              )
-            </Text>
-          </Timeline.Item>
-
-          <Timeline.Item dot="🔏">
-            <Text delete={isServerInfo} style={styles.text}>
-              Rename <Text code>.env.example</Text> to <Text code>.env</Text> and provide your{" "}
-              <Text strong>appId</Text> and <Text strong>serverUrl</Text> from{" "}
-              <a
-                href="https://moralis.io?utm_source=boilerplatehosted&utm_medium=todo&utm_campaign=ethereum-boilerplate"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Moralis
-              </a>
-              :
-            </Text>
-            <Text code delete={isServerInfo} style={{ display: "block" }}>
-              REACT_APP_MORALIS_APPLICATION_ID = xxxxxxxxxxxx
-            </Text>
-            <Text code delete={isServerInfo} style={{ display: "block" }}>
-              REACT_APP_MORALIS_SERVER_URL = https://xxxxxx.grandmoralis.com:2053/server
-            </Text>
-          </Timeline.Item>
-
-          <Timeline.Item dot="🔁">
-            <Text delete={isServerInfo} style={styles.text}>
-              Stop the app and start it again <Text code>npm run start</Text>
-            </Text>
-          </Timeline.Item>
-
-          <Timeline.Item dot="💿">
-            <Text delete={isInchDex} style={styles.text}>
-              Install{" "}
-              <a
-                href="https://moralis.io/plugins/1inch/?utm_source=boilerplatehosted&utm_medium=todo&utm_campaign=ethereum-boilerplate"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                1inch Moralis Plugin
-              </a>{" "}
-              needed for the<Text code>{"<InchDex />"}</Text> component (optional)
-            </Text>
-          </Timeline.Item>
-
-          <Timeline.Item dot="🚀">
-            <Text style={styles.text}>BUIDL!!!</Text>
-          </Timeline.Item>
-        </Timeline>
+          </Col>
+        </Row>
+        {/* </div> */}
       </Card>
-      <div>
-        <Card
-          style={styles.card}
-          title={<h1 style={styles.title}>💣 Starting Local Chain (optional)</h1>}
-        >
+      <Card
+        style={styles.banner}
+        title={<h1 style={styles.title}>Launching CryptoDevs 🚀</h1>}
+      >
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+          <Image
+            preview={false}
+            src={"https://ipfs.moralis.io:2053/ipfs/QmTNVQaQjCz5JxgYUDrBtcdDAnXhHvvyfhbqHgu63dgWR1/images/0000000000000000000000000000000000000000000000000000000000000002.png"}
+            alt="crypto dev image"
+            style={styles.cryptoDevImage}
+          />
+          <Text style={styles.text}>
+            <Text strong>CryptoDevs</Text> is a collection of 1000+
+            uniquely generated digital collectibles with various attributes
+            which can be minted as NFTs on the Polygon blockchain.
+            This collection is a tribute for all the Developers out there 💜
+          </Text>
+          <Text style={styles.text}>
+            <Text code>#RoadtoWeb3</Text><Text code>#ETHGlobal</Text><Text code>#CryptoDevs</Text>
+          </Text>
+          <Text style={styles.text}>
+          <Text italic>PROVENANCE HASH : </Text><Text code italic>9566a46ff11d8abfbcb51c6ce360f59739e4e298ac7faba649d046fe6c099ea6</Text>
+          </Text>
+        </div>
+      </Card>
+
+
+      <div style={{ display: "flex", flexDirection: "row" }}>
+        <Card style={styles.card} title={<h1 style={styles.title}>Functionalities </h1>}>
           <Timeline mode="left" style={styles.timeline}>
-            <Timeline.Item dot="💿">
+            <Timeline.Item dot="">
               <Text style={styles.text}>
-                Install{" "}
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href="https://www.npmjs.com/package/truffle"
-                >
-                  Truffle
-                </a>{" "}
-                and{" "}
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href="https://www.npmjs.com/package/ganache-cli"
-                >
-                  ganache-cli
-                </a>{" "}
-                <Text code>npm install -g ganache-cli truffle</Text>
+                A cross-chain marketplace to <Text strong>Search, Buy, List</Text> and <Text strong>Sell</Text> your NFTs
               </Text>
             </Timeline.Item>
-            <Timeline.Item dot="⚙️">
+
+            <Timeline.Item dot="">
               <Text style={styles.text}>
-                Start you local devchain: <Text code>npm run devchain</Text> on a new terminal
+                <Text strong>Candy NFT machine </Text> which generates a random NFT on click of a button!
               </Text>
             </Timeline.Item>
-            <Timeline.Item dot="📡">
+
+            <Timeline.Item dot="">
               <Text style={styles.text}>
-                Deploy test contract: <Text code>npm run deploy</Text> on a new terminal
+                Under <Text strong>Your Profile</Text> you can see all your transactions and actions
               </Text>
             </Timeline.Item>
-            <Timeline.Item dot="✅" style={styles.text}>
-              <Text>
-                Open the <Text strong>📄 Contract</Text> tab
+
+            <Timeline.Item dot="">
+              <Text style={styles.text}>
+                <Text strong>Mint - Burn - check Rarity</Text> of NFT Collections
+              </Text>
+            </Timeline.Item>
+
+            <Timeline.Item dot="">
+              <Text style={styles.text}>
+                Featuring <Text strong>CryptoDevs</Text> NFTs collection
               </Text>
             </Timeline.Item>
           </Timeline>
         </Card>
+
         <Card
-          style={{ marginTop: "10px", ...styles.card }}
-          title={<h1 style={styles.title}>📡 Connecting your Local Chain to the Moralis DB</h1>}
+          style={styles.card}
+          title={<h1 style={styles.title}>Technologies</h1>}
         >
           <Timeline mode="left" style={styles.timeline}>
-            <Timeline.Item dot="💿">
+            <Timeline.Item dot="">
               <Text style={styles.text}>
-                Download{" "}
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href="https://github.com/fatedier/frp/releases"
-                >
-                  frpc
-                </a>{" "}
-                and provide missing params in the <Text code>.env</Text> file
+                ⚡ Lightning-fast transactions powered by <Text strong>Polygon</Text> Network.
               </Text>
             </Timeline.Item>
-            <Timeline.Item dot="⚙️">
+            <Timeline.Item dot="">
               <Text style={styles.text}>
-                Connect your Moralis Database and Local Chain: <Text code>npm run connect</Text>
+                📦 Storing NFTs artwork and metadata on <Text strong>IPFS</Text>.
               </Text>
             </Timeline.Item>
-            <Timeline.Item dot="💾">
+            <Timeline.Item dot="">
               <Text style={styles.text}>
-                Add contract events you want to watch: <Text code>npm run watch:events</Text>
+                🛠 Boilerplate and backend server powered by <Text strong>Moralis</Text>.
+              </Text>
+            </Timeline.Item>
+            <Timeline.Item dot="" style={styles.text}>
+              <Text>
+                ⛓ Randomness use to generate candy NFT art using <Text strong>Chainlink</Text> VRF
               </Text>
             </Timeline.Item>
           </Timeline>
         </Card>
       </div>
+
     </div>
   );
 }

@@ -113,6 +113,7 @@ function RarityCryptoDevs() {
         let metadata = NFTTokenIds.map((e) => JSON.parse(JSON.stringify(e.metadata)).attributes);
         // console.log(metadata);
         const tally = { TraitCount: {} };
+        console.log(visibility);
 
         for (let j = 0; j < metadata.length; j++) {
             let nftTraits = metadata[j].map((e) => e.trait_type);
@@ -191,9 +192,10 @@ function RarityCryptoDevs() {
         }
 
         nftArr.sort((a, b) => b.Rarity - a.Rarity);
-        console.log(nftArr);
+        // console.log(nftArr);
         setRarityMetadata(nftArr);
         setNFTBalances(nftArr);
+        console.log(visibility)
     }
 
 
@@ -415,18 +417,15 @@ function RarityCryptoDevs() {
 
 
                         {!visibility && (
-
                             <Button
                                 type="primary"
                                 size="large"
                                 loading={isPending}
-                                style={{ width: "200px", marginTop: "0px", marginBottom: "20px" }}
+                                style={{ width: "200px", marginTop: "0px", marginBottom: "20px"}}
                                 onClick={() => generate()}
                             >
                                 Check Rarity 🤩
                             </Button>
-
-
                         )}
 
 

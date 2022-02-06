@@ -1,7 +1,7 @@
 import NativeBalance from "./NativeBalance";
 import Address from "./Address/Address";
 import Blockie from "./Blockie";
-import { Card, Button, Modal, Tooltip, Image, Alert, InputNumber, Divider } from "antd";
+import { Card, Button, Modal, Tooltip, Image, Alert, InputNumber, Divider, Typography } from "antd";
 import { useState } from "react";
 import { useWeb3ExecuteFunction } from "react-moralis";
 import { Steps } from 'antd';
@@ -14,6 +14,7 @@ import {
 import { useMoralisDapp } from "providers/MoralisDappProvider/MoralisDappProvider";
 import { getExplorer } from "helpers/networks";
 const { Meta } = Card;
+const { Text } = Typography;
 
   
 
@@ -197,7 +198,11 @@ function BurnCryptoDevs() {
                     Collection Size: {`${totalNFTs}`}
                   
                   <p style={{marginTop: "10px", width: "300px"}}>
-                      scroll below to see the full collection
+                  <Text>
+                        scroll below to see the full collection or view it on{" "}
+                        <a href={`https://testnets.opensea.io/assets/mumbai/${contractAddress.toLowerCase()}/${inputTokenValue}`} target={"_blank"}>opensea</a>
+                        {" "}
+                      </Text>
                   </p>
                   </div>
                 </>
