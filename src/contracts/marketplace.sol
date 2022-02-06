@@ -6,8 +6,9 @@ import "github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/sec
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "base64-sol/base64.sol";
+import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
 
-contract marketplace is ReentrancyGuard, ERC721URIStorage, Ownable {
+contract marketplace is ReentrancyGuard, ERC721URIStorage, Ownable, VRFConsumerBase {
     using Counters for Counters.Counter;
     Counters.Counter private _itemIds;
     Counters.Counter private _itemsSold;
@@ -23,21 +24,26 @@ contract marketplace is ReentrancyGuard, ERC721URIStorage, Ownable {
     uint256 public size;
     string[] public pathCommands;
     string[] public colors;
+
+     bytes32 internal keyHash;
+    uint256 internal fee;
     
     address public ownerContract;
      
-     constructor() 
-     ERC721("RandomSVG", "rsNFT")
+     constructor(address _VRFCoordinator, address _LinkToken, bytes32 _keyhash, uint256 _fee) 
+     VRFConsumerBase(_VRFCoordinator, _LinkToken)
+     ERC721("CandyNFT", "CANDY")
         {
         tokenCounter = 0;
-        tokenPrice = 10000000000000; // 0.00001 token
+        tokenPrice = 250000000000000000; // 0.25 MATIC per NFT Token
         maxNumberOfPaths = 10;
         maxNumberOfPathCommands = 5;
         size = 500;
         pathCommands = ["M", "L"];
         colors = ["red", "blue", "green", "black"];
-
         ownerContract = msg.sender;
+        keyHash = _keyhash;
+        fee = _fee;
         }   
      
      struct MarketItem {
@@ -75,6 +81,7 @@ contract marketplace is ReentrancyGuard, ERC721URIStorage, Ownable {
          );
      
     
+    // Listing 
     function createMarketItem(
         address nftContract,
         uint256 tokenId,
@@ -108,6 +115,7 @@ contract marketplace is ReentrancyGuard, ERC721URIStorage, Ownable {
             );
         }
         
+    // Selling
     function createMarketSale(
         address nftContract,
         uint256 itemId
@@ -128,7 +136,8 @@ contract marketplace is ReentrancyGuard, ERC721URIStorage, Ownable {
             _itemsSold.increment();
             idToMarketItem[itemId].sold = true;
         }
-        
+    
+    // market 
     function fetchMarketItems() public view returns (MarketItem[] memory) {
         uint itemCount = _itemIds.current();
         uint unsoldItemCount = _itemIds.current() - _itemsSold.current();
@@ -146,32 +155,37 @@ contract marketplace is ReentrancyGuard, ERC721URIStorage, Ownable {
         return items;
     }
 
-    // ///////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////
-    // Minting NFT contract 
+    // Candy NFT Minting contract code //
 
+    // withdraw money
     function withdraw() public payable onlyOwner {
         payable(owner()).transfer(address(this).balance);
     }
 
-    function create() public payable{
-        require(msg.value >= tokenPrice, "Need to send more tokens to mint!");
-        uint256 tokenId = tokenCounter; 
-        tokenCounter = tokenCounter + 1;
-        _safeMint(msg.sender, tokenId);
 
-        uint256 randomNumber = uint256(keccak256(abi.encode(tokenId)));
+    function create() public returns (bytes32 requestId) {
+        requestId = requestRandomness(keyHash, fee);
+        requestIdToSender[requestId] = msg.sender;
+        uint256 tokenId = tokenCounter; 
+        requestIdToTokenId[requestId] = tokenId;
+        tokenCounter = tokenCounter + 1;
+    }
+
+    function finishMint(uint256 tokenId) public {
+        require(bytes(tokenURI(tokenId)).length <= 0, "tokenURI is already set!"); 
+        require(tokenCounter > tokenId, "TokenId has not been minted yet!");
+        require(tokenIdToRandomNumber[tokenId] > 0, "Need to wait for the Chainlink node to respond!");
+        uint256 randomNumber = tokenIdToRandomNumber[tokenId];
         string memory svg = generateSVG(randomNumber);
         string memory imageURI = svgToImageURI(svg);
         _setTokenURI(tokenId, formatTokenURI(imageURI));
+    }
 
-        emit mintedItem(
-                address(this),
-                tokenId,
-                msg.sender,
-                tokenPrice
-        );
+    function fulfillRandomness(bytes32 requestId, uint256 randomNumber) internal override {
+        address nftOwner = requestIdToSender[requestId];
+        uint256 tokenId = requestIdToTokenId[requestId];
+        _safeMint(nftOwner, tokenId);
+        tokenIdToRandomNumber[tokenId] = randomNumber;
     }
 
     function generateSVG(uint256 _randomness) public view returns (string memory finalSvg) {
@@ -227,10 +241,6 @@ contract marketplace is ReentrancyGuard, ERC721URIStorage, Ownable {
         return string(bstr);
     }
 
-
-
-
-    // You could also just upload the raw SVG and have solildity convert it!
     function svgToImageURI(string memory svg) public pure returns (string memory) {
         // example:
         // <svg width='500' height='500' viewBox='0 0 285 350' fill='none' xmlns='http://www.w3.org/2000/svg'><path fill='black' d='M150,0,L75,200,L225,200,Z'></path></svg>
@@ -256,26 +266,7 @@ contract marketplace is ReentrancyGuard, ERC721URIStorage, Ownable {
                 )
             );
     }
-
-    // remove later:
-    function bytes32ToString(bytes32 _bytes32) public pure returns (string memory) {
-        uint8 i = 0;
-        while(i < 32 && _bytes32[i] != 0) {
-            i++;
-        }
-        bytes memory bytesArray = new bytes(i);
-        for (i = 0; i < 32 && _bytes32[i] != 0; i++) {
-            bytesArray[i] = _bytes32[i];
-        }
-        return string(bytesArray);
-    }
       
 }
 
-/// Thanks for inspiration: https://github.com/dabit3/polygon-ethereum-nextjs-marketplace/
-
-
-// furter steps
-// deploy new contract
-// add in sync for mintedItem event, and listitemevent
-// chainlink vrf using triggers or cloud functionlality 
+// Thanks for inspiration: https://github.com/dabit3/polygon-ethereum-nextjs-marketplace/

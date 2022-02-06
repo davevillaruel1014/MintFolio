@@ -6,12 +6,16 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/security/ReentrancyGuard.sol";
+import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
 
-contract CryptoDevs is ReentrancyGuard, ERC721URIStorage, Ownable {
+contract CryptoDevs is ReentrancyGuard, ERC721URIStorage, Ownable, VRFConsumerBase {
     
     using SafeMath for uint256;
 
     uint256 public tokenCounter;
+    uint256 public startingIndex;
+    bytes32 internal keyHash;
+    uint256 internal fee;
 
     string public CRYPTODEVS_PROVENANCE = "";
 
@@ -21,35 +25,40 @@ contract CryptoDevs is ReentrancyGuard, ERC721URIStorage, Ownable {
 
     mapping(uint256 => address) public TokenToOwner;
 
-    
-    // uint256 public constant MAX_TOKENS_PER_PURCHASE = 20;
-
     uint256 private price = 25000000000000000; // 0.025 Ether
     string public baseURI = "";
 
     bool public isSaleActive = true;
 
-    constructor() 
+    constructor(address _VRFCoordinator, address _LinkToken, bytes32 _keyhash, uint256 _fee)
+     VRFConsumerBase(_VRFCoordinator, _LinkToken)
     ERC721("CryptoDevs", "DEVS") {
         tokenCounter = 1;
+        keyHash = _keyhash;
+        fee = _fee;
     }
 
     function setProvenanceHash(string memory _provenanceHash) public onlyOwner {
         CRYPTODEVS_PROVENANCE = _provenanceHash;
     }
+
+    function generateStartingIndex() public onlyOwner returns  (bytes32 requestId){
+        require(LINK.balanceOf(address(this)) >= fee, "Not enough LINK - fill contract with faucet");
+        return requestRandomness(keyHash, fee);
+    }
+
+    function fulfillRandomness(bytes32 requestId, uint256 randomness) internal override {
+        startingIndex = randomness;
+    }
         
-    // function reserveTokens(address _to, uint256 _reserveAmount) public onlyOwner {        
-    //     uint supply = totalSupply();
-    //     for (uint i = 0; i < _reserveAmount; i++) {
-    //         _safeMint(_to, supply + i);
-    //     }
-    // }
+
     
+    // my NFT tokenID starts from 1 to N
     function mint() public payable {
         require(isSaleActive, "Sale is not active" );
         require(tokenCounter < MAX_TOKENS + 1, "Exceeds maximum tokens available for purchase");
         require(msg.value >= price, "token value sent is not correct");
-        uint256 tokenId = tokenCounter;
+        uint256 tokenId = (tokenCounter + startingIndex) % MAX_TOKENS;
         _safeMint(msg.sender, tokenId);
         _setTokenURI(tokenId, formatTokenURI(tokenId));
         TokenToOwner[tokenId] = msg.sender;
@@ -66,9 +75,6 @@ contract CryptoDevs is ReentrancyGuard, ERC721URIStorage, Ownable {
 
     function formatTokenURI(uint256 tokenId) public view returns (string memory) {
         string memory uri = "";
-
-        // baseuri = "ipfs://QmXsX1u1oevaBb3ANvRduo9sfcnGQiASshPNUSyvvuMJ7Z/metadata/"
-        // QmXsX1u1oevaBb3ANvRduo9sfcnGQiASshPNUSyvvuMJ7Z
     
         for(uint256 i = 0; i < 64-getNumberLength(tokenId) ;i++){
             uri = string(abi.encodePacked(uri, "0"));
@@ -104,18 +110,4 @@ contract CryptoDevs is ReentrancyGuard, ERC721URIStorage, Ownable {
     function withdraw() public payable onlyOwner {
        payable(owner()).transfer(address(this).balance);
     }
-    
-    // function tokensByOwner(address _owner) external view returns(uint256[] memory ) {
-    //     uint256 tokenCount = balanceOf(_owner);
-    //     if (tokenCount == 0) {
-    //         return new uint256[](0);
-    //     } else {
-    //         uint256[] memory result = new uint256[](tokenCount);
-    //         uint256 index;
-    //         for (index = 0; index < tokenCount; index++) {
-    //             result[index] = tokenOfOwnerByIndex(_owner, index);
-    //         }
-    //         return result;
-    //     }
-    // }
 }
