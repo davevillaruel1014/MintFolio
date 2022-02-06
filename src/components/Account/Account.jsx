@@ -8,6 +8,8 @@ import { SelectOutlined } from "@ant-design/icons";
 import { getExplorer } from "helpers/networks";
 import Text from "antd/lib/typography/Text";
 import { connectors } from "./config";
+import { useMoralisDapp } from "providers/MoralisDappProvider/MoralisDappProvider";
+
 const styles = {
   account: {
     height: "42px",
@@ -44,12 +46,15 @@ const styles = {
 };
 
 function Account() {
-  const { authenticate, isAuthenticated, account, chainId, logout } =
+  const { authenticate, isAuthenticated, account, logout } =
     useMoralis();
+
+  const { walletAddress, chainId } = useMoralisDapp();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isAuthModalVisible, setIsAuthModalVisible] = useState(false);
 
-  if (!isAuthenticated || !account) {
+  if (!isAuthenticated) {
+    console.log(isAuthenticated, account);
     return (
       <>
         <div onClick={() => setIsAuthModalVisible(true)}>
@@ -105,25 +110,9 @@ function Account() {
 
   return (
     <>
-      {/* <button
-        onClick={async () => {
-          try {
-            console.log("change")
-            await web3._provider.request({
-              method: "wallet_switchEthereumChain",
-              params: [{ chainId: "0x38" }],
-            });
-            console.log("changed")
-          } catch (e) {
-            console.error(e);
-          }
-        }}
-      >
-        Hi
-      </button> */}
       <div style={styles.account} onClick={() => setIsModalVisible(true)}>
         <p style={{ marginRight: "5px", ...styles.text }}>
-          {getEllipsisTxt(account, 6)}
+          {getEllipsisTxt(walletAddress, 6)}
         </p>
         <Blockie currentWallet scale={3} />
       </div>
@@ -155,7 +144,7 @@ function Account() {
           />
           <div style={{ marginTop: "10px", padding: "0 10px" }}>
             <a
-              href={`${getExplorer(chainId)}/address/${account}`}
+              href={`${getExplorer(chainId)}/address/${walletAddress}`}
               target="_blank"
               rel="noreferrer"
             >
@@ -174,9 +163,8 @@ function Account() {
             fontSize: "16px",
             fontWeight: "500",
           }}
-          onClick={async () => {
-            await logout();
-            window.localStorage.removeItem("connectorId");
+          onClick={() => {
+            logout();
             setIsModalVisible(false);
           }}
         >
